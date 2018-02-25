@@ -1,0 +1,38 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
+
+	<aop:aspectj-autoproxy />
+
+	<bean id="coder" class="com.aspectexample.codder.GoogleCoder" ></bean>
+
+	<!-- Aspect -->
+	<bean id="myAspect" class="com.aspectexample.aspect.CustomAspect" />
+	
+	<aop:config>
+
+  <aop:aspect id="aspect" ref="myAspect">
+
+    <!-- @AfterReturning -->
+    <aop:pointcut id="pointCutAfterReturning"
+       expression="execution(* com.aspectexample.codder.Codder.getLastRepository(..))" />
+
+    <aop:after-returning method="logAfterReturning"
+      returning="repositoryName" pointcut-ref="pointCutAfterReturning" />
+	
+	<!-- @AfterThrowing -->
+    <aop:pointcut id="pointCutAfterThrowing"
+      expression="execution(* com.aspectexample.codder.Codder.throwRepositoryExist(..))" />
+
+    <aop:after-throwing method="logAfterThrowing"
+      throwing="error" pointcut-ref="pointCutAfterThrowing" />
+   
+  </aop:aspect>
+
+</aop:config>
+	
+</beans>
